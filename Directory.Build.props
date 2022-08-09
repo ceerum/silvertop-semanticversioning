@@ -1,0 +1,37 @@
+<Project>
+
+  <PropertyGroup>
+    <ArtifactsPath>$([MSBuild]::NormalizePath($(MSBuildThisFileDirectory)artifacts\))</ArtifactsPath>
+    <BaseIntermediateOutputPath>$(ArtifactsPath)obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(ArtifactsPath)bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Authors>Ross McCulloch</Authors>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <Company>Silvertop</Company>
+    <Copyright>© Ross McCulloch</Copyright>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InformationalVersion>0.0.0.0-beta.0</InformationalVersion>
+    <IsPackable>true</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <Nullable>enable</Nullable>
+    <PackageProjectUrl></PackageProjectUrl>
+    <Platforms>AnyCPU</Platforms>
+    <Product>Silvertop.SemVer</Product>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <SignAssembly>false</SignAssembly>
+    <TargetFramework>net6.0</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.0.0.0</Version>
+  </PropertyGroup>
+
+</Project>

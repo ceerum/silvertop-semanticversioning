@@ -1,0 +1,18 @@
+next-version: 0.1
+assembly-versioning-scheme: MajorMinorPatch
+mode: ContinuousDelivery
+branches: 
+  main:
+    regex: ^master$|^main$
+    mode: ContinuousDelivery
+    tag: 'beta'
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
+ignore:
+  sha: []
+merge-message-formats: {}
