@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\Silvertop.SemVer\Silvertop.SemVer.csproj" />
+    <ProjectReference Include="..\..\source\Silvertop.SemanticVersioning\Silvertop.SemanticVersioning.csproj" />
   </ItemGroup>
 
 </Project>

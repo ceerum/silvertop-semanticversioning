@@ -2,32 +2,32 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Silvertop.SemVer;
+namespace Silvertop.SemanticVersioning;
 
-/// <summary>
-///     A model of a SemVer that strictly supports semantic versioning as described at http://semver.org.
-/// </summary>
+/// <summary>A model of a SemVer that strictly supports semantic versioning 2.0.0 as described at http://semver.org.</summary>
 [Serializable]
 public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>, IEquatable<SemanticVersion>
 {
+    private const char BuildMetadataPrefix = '+';
+    private const char NumericSeperator = '.';
+    private const char PreReleasePrefix = '-';
     private const int EqualPrecendence = 0;
     private const int ThisIsGreaterThanOther = 1;
     private const int ThisIsLessThanOther = -1;
 
-    private const char NumericSeperator = '.';
-    private const char PreReleasePrefix = '-';
-    private const char BuildMetadataPrefix = '+';
-
-    private const RegexOptions RegexFlags = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
-
-    // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     private static readonly Regex OfficialRegexWithGroups = new(
         @"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
         RegexFlags);
 
-    private static readonly Regex PreReleaseOnlyRegex = new(@"^(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)$", RegexFlags);
+    private static readonly Regex PreReleaseOnlyRegex = new(
+        @"^(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)$",
+        RegexFlags);
 
     private static readonly Regex BuildMetadataOnlyRegex = new(@"^(?<buildmetadata>(?!\+)[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*)$", RegexFlags);
+
+    // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+
+    private const RegexOptions RegexFlags = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
     /// <summary>Initializes a new instance of the <see cref="SemanticVersion" /> class.</summary>
     /// <param name="versionString">A string representation of the semantic version.</param>
@@ -47,6 +47,7 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
     /// <param name="patch">The patch version number.</param>
     /// <param name="preRelease">A pre-release string</param>
     /// <param name="buildMetadata">Additional build metadata</param>
+    /// <exception cref="ArgumentException"></exception>
     public SemanticVersion(uint major, uint minor, uint patch = 0, string? preRelease = null, string? buildMetadata = null)
     {
         Major = major;
@@ -156,17 +157,23 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
     /// <summary>Converts the given System.Version into a SemanticVersion.</summary>
     /// <param name="version">The version.</param>
     /// <param name="treatRevisionAsPreReleaseNumber">
-    ///     If true and a revision number is set then the revision number will be
-    ///     treated as the pre-release version. Default is false.
+    ///     If true and a revision number is set then the revision number will be treated as the pre-release version. Default
+    ///     is false.
     /// </param>
     /// <param name="preReleasePrefix">
-    ///     If treatRevisionAsPreReleaseNumber is true, and a revision number is set, pre-release
-    ///     string will start with this prefix. Default is 'beta'.
+    ///     If treatRevisionAsPreReleaseNumber is true, and a revision number is set, pre-release string will start with this prefix.
+    ///     Default is 'beta'.
     /// </param>
     /// <returns>A semantic version</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public static SemanticVersion FromVersion(Version version, bool treatRevisionAsPreReleaseNumber = false, string preReleasePrefix = "beta")
     {
-        ArgumentNullException.ThrowIfNull(version, nameof(version));
+        if (version == null)
+        {
+            throw new ArgumentNullException(nameof(version));
+        }
+        
         if (version.Revision > 0 && treatRevisionAsPreReleaseNumber)
         {
             return new SemanticVersion((uint)version.Major, (uint)version.Minor, (uint)version.Build, $"{preReleasePrefix}.{version.Revision}");
@@ -184,11 +191,11 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
         return hashCode;
     }
 
-    /// <summary>
-    /// </summary>
+    /// <summary></summary>
     /// <param name="version1"></param>
     /// <param name="version2"></param>
     /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static bool operator ==(SemanticVersion? version1, SemanticVersion? version2)
     {
         if (version1 is null)
@@ -201,14 +208,14 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
             throw new ArgumentNullException(nameof(version2));
         }
 
-        return version1?.CompareTo(version2) == 0;
+        return version1.CompareTo(version2) == 0;
     }
 
     /// <summary>Implements the operator &gt;.</summary>
     /// <param name="version1">The version1.</param>
     /// <param name="version2">The version2.</param>
     /// <returns>The result of the operator.</returns>
-    /// <exception cref="ArgumentNullException">version1</exception>
+    /// <exception cref="ArgumentNullException"></exception>
     public static bool operator >(SemanticVersion version1, SemanticVersion version2)
     {
         if (version1 is null)
@@ -261,22 +268,26 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
         return version1 == version2 || version1 < version2;
     }
 
-    /// <summary>
-    ///     Parses a version string using loose semantic versioning rules that allows 2-4 version components followed by an
-    ///     optional special version.
-    /// </summary>
+    /// <summary>Parses a version string using loose semantic versioning rules that allows 2-4 version components followed by an optional special version.</summary>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException"></exception>
     public static SemanticVersion Parse(string versionString)
     {
-        ArgumentNullException.ThrowIfNull(versionString);
-
-        if (string.IsNullOrEmpty(versionString))
+        if (versionString == null)
         {
-            throw new ArgumentException("The string is empty", nameof(versionString));
+            throw new ArgumentNullException(nameof(versionString));
+        }
+
+        if (string.IsNullOrWhiteSpace(versionString))
+        {
+            throw new ArgumentException("The version string is empty", nameof(versionString));
         }
 
         if (!TryParse(versionString, out var semVer))
         {
-            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, $"'{versionString}' could not be parsed as a valid semantic version"), nameof(versionString));
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, $"'{versionString}' could not be parsed as a valid semantic version"),
+                nameof(versionString));
         }
 
         return semVer!;
@@ -309,15 +320,10 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
     }
 
     /// <summary>Converts this instance to a System.Version.</summary>
-    /// <remarks>
-    ///     ToVersion(false) on 1.2.4-alpha.7 returns 1.2.4
-    ///     ToVersion(true) on 1.2.4-alpha.7 returns 1.2.4.7
-    /// </remarks>
-    /// <param name="treatLastPreReleaseNumberAsRevision">
-    ///     If the last section of a pre-release tag is numeric, use it as the
-    ///     revision number.
-    /// </param>
+    /// <remarks>ToVersion(false) on 1.2.4-alpha.7 returns 1.2.4 ToVersion(true) on 1.2.4-alpha.7 returns 1.2.4.7</remarks>
+    /// <param name="treatLastPreReleaseNumberAsRevision">If the last section of a pre-release tag is numeric, use it as the revision number.</param>
     /// <returns>A version</returns>
+    /// <exception cref="InvalidCastException"></exception>
     public Version ToVersion(bool treatLastPreReleaseNumberAsRevision = false)
     {
         if (Major > int.MaxValue)
@@ -355,6 +361,10 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
     /// <param name="versionString">A string representation of the SemVer</param>
     /// <param name="semVer">The semantic version</param>
     /// <returns>true if the string could be parsed successfully, false if unsuccessful</returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="FormatException"></exception>
+    /// <exception cref="OverflowException"></exception>
     public static bool TryParse(string versionString, out SemanticVersion? semVer)
     {
         semVer = null;
@@ -369,28 +379,31 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
             return false;
         }
 
+        var matchedGroups = match.Groups.Cast<Group>().ToList();
+
         var major = uint.Parse(match.Groups["major"].Value.Trim());
 
         uint minor = 0;
-        if (match.Groups.ContainsKey("minor"))
+        if (matchedGroups.Any(group=> group.Name.Equals("minor")))
         {
             minor = uint.Parse(match.Groups["minor"].Value.Trim());
         }
 
         uint patch = 0;
-        if (match.Groups.ContainsKey("patch"))
+        if (matchedGroups.Any(group=> group.Name.Equals("patch")))
         {
             patch = uint.Parse(match.Groups["patch"].Value.Trim());
         }
 
         string? preRelease = null;
-        if (match.Groups.ContainsKey("prerelease"))
+        if (matchedGroups.Any(group=> group.Name.Equals("prerelease")))
         {
             preRelease = match.Groups["prerelease"].Value.Trim();
         }
 
         string? build = null;
-        if (match.Groups.ContainsKey("buildmetadata"))
+        
+        if (matchedGroups.Any(group=> group.Name.Equals("buildmetadata")))
         {
             build = match.Groups["buildmetadata"].Value.Trim();
         }
@@ -400,10 +413,30 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
         return true;
     }
 
+    private int CompareNumericParts(SemanticVersion other)
+    {
+        var majorComparison = Major.CompareTo(other.Major);
+        if (majorComparison != 0)
+        {
+            return majorComparison;
+        }
+
+        var minorComparison = Minor.CompareTo(other.Minor);
+        if (minorComparison != 0)
+        {
+            return minorComparison;
+        }
+
+        var patchComparison = Patch.CompareTo(other.Patch);
+        return patchComparison != 0 ? patchComparison : 0;
+    }
+
     private int ComparePreReleaseString(string otherPreRelease)
     {
         var thisHasPrelease = !string.IsNullOrEmpty(PreRelease);
         var otherHasPreRelease = !string.IsNullOrEmpty(otherPreRelease);
+
+        // ReSharper disable once ConvertIfStatementToSwitchStatement for readability
         if (!thisHasPrelease && otherHasPreRelease)
         {
             return ThisIsGreaterThanOther;
@@ -476,24 +509,6 @@ public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>,
         // All parts in this are equal to all parts in other so check if other has more parts
         var otherHasMoreParts = otherParts.Length > thisParts.Length;
         return otherHasMoreParts ? ThisIsGreaterThanOther : EqualPrecendence;
-    }
-
-    private int CompareNumericParts(SemanticVersion other)
-    {
-        var majorComparison = Major.CompareTo(other.Major);
-        if (majorComparison != 0)
-        {
-            return majorComparison;
-        }
-
-        var minorComparison = Minor.CompareTo(other.Minor);
-        if (minorComparison != 0)
-        {
-            return minorComparison;
-        }
-
-        var patchComparison = Patch.CompareTo(other.Patch);
-        return patchComparison != 0 ? patchComparison : 0;
     }
 
     private bool TryExtractPreReleaseNumber(out uint preReleaseNumber)

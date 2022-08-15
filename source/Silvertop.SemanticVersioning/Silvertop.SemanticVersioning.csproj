@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Silvertop.SemanticVersioning</AssemblyName>
+    <RootNamespace>Silvertop.SemanticVersioning</RootNamespace>
+    <Description>An implemetnation of SemVer that strictly supports semantic versioning 2.0.0 as described at http://semver.org</Description>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>
