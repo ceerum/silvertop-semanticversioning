@@ -11,8 +11,9 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <Authors>Ross McCulloch</Authors>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <Company>Silvertop</Company>
+    <Company>Silvertop Software</Company>
     <Copyright>Copyright © Ross McCulloch 2022</Copyright>
+    <Description>A .Net implementation of SemVer that strictly supports Semantic Versioning 2.0.0.</Description>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -24,11 +25,18 @@
     <LangVersion>10.0</LangVersion>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <Nullable>enable</Nullable>
+    <PackageId>Silvertop.SemanticVersioning</PackageId>
+    <PackageVersion>0.0.0.0-alpha.0</PackageVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ceerum/silvertop-semanticversioning</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageTags>SemVer SemanticVersion SemanticVersioning .Net</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <Product>Silvertop.SemanticVersioning</Product>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RespositoryType>git</RespositoryType>
+    <RepositoryUrl>https://github.com/ceerum/silvertop-semanticversioning</RepositoryUrl>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <SignAssembly>false</SignAssembly>
     <TargetFramework>net6.0</TargetFramework>
