@@ -73,7 +73,7 @@ jobs:
 
       - name: Publish Coverage to Codacy
         id:   publish-coverage-report
-        uses: codacy/codacy-coverage-reporter-action@master
+        uses: codacy/codacy-coverage-reporter-action@v1
         if:   github.event_name == 'push'
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -81,7 +81,7 @@ jobs:
 
       - name: Create Packages
         id:   create-packages
-        run:  dotnet pack --configuration ${{env.BUILD_CONFIGURATION}} --output ./packages
+        run:  dotnet pack --no-build --configuration ${{env.BUILD_CONFIGURATION}} -p:PackageVersion=${{ steps.calculate-gitversion.outputs.semVer }} --output ./packages
 
       - name: Upload Packages
         id:   upload-packages
