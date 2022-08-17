@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <AssemblyName>Silvertop.SemanticVersioning</AssemblyName>
+    <PackageIcon>icon_256x256.png</PackageIcon>
+    <PackageId>Silvertop.SemanticVersioning</PackageId>
     <RootNamespace>Silvertop.SemanticVersioning</RootNamespace>
     <TargetFrameworks>net6.0</TargetFrameworks>
-    <PackageIcon>icon_256x256.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
