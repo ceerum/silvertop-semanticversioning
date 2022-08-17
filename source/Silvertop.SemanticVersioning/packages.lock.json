@@ -1,8 +1,6 @@
 {
   "version": 1,
   "dependencies": {
-    ".NETStandard,Version=v2.1": {},
-    ".NETCoreApp,Version=v5.0": {},
     "net6.0": {}
   }
 }
