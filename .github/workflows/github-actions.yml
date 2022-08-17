@@ -17,6 +17,7 @@ jobs:
     outputs:
       semVer: ${{ steps.calculate-gitversion.outputs.semVer }}
     steps:
+
       - name: Checkout Source
         id:   checkout
         uses: actions/checkout@v3
@@ -33,7 +34,7 @@ jobs:
 
       - name: Install GitVersion
         id:   install-git-version
-        uses: GitTools/actions/gitversion@v0.9.13
+        uses: gittools/actions/gitversion/setup@v0.9.13
         with:
           versionSpec: '5.x'
         
