@@ -1,0 +1,192 @@
+name: Silvertop.SemanticVersioning
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_CONFIGURATION: Release
+  SOLUTION_NAME: Silvertop.SemanticVersioning.sln
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      semVer: ${{ steps.calculate-gitversion.outputs.semVer }}
+    steps:
+      - name: Checkout Source
+        id:   checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Set Up .NET
+        id:   setup-dot-net
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: | 
+            5.0.x
+            6.0.x
+
+      - name: Install GitVersion
+        id:   install-git-version
+        uses: GitTools/actions/gitversion@v0.9.13
+        with:
+          versionSpec: '5.x'
+        
+      - name: Calculate Semantic Version
+        id:   calculate-gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.13
+        with:
+          useConfigFile: true
+
+      - name: Display GitVersion outputs
+        id:   display-semver
+        run: |
+          echo "Major: ${{ steps.calculate-gitversion.outputs.major }}"
+          echo "Minor: ${{ steps.calculate-gitversion.outputs.minor }}"
+          echo "Patch: ${{ steps.calculate-gitversion.outputs.patch }}"
+          echo "PreReleaseTag: ${{ steps.calculate-gitversion.outputs.preReleaseTag }}"
+          echo "PreReleaseTagWithDash: ${{ steps.calculate-gitversion.outputs.preReleaseTagWithDash }}"
+          echo "PreReleaseLabel: ${{ steps.calculate-gitversion.outputs.preReleaseLabel }}"
+          echo "PreReleaseNumber: ${{ steps.calculate-gitversion.outputs.preReleaseNumber }}"
+          echo "WeightedPreReleaseNumber: ${{ steps.calculate-gitversion.outputs.weightedPreReleaseNumber }}"
+          echo "BuildMetaData: ${{ steps.calculate-gitversion.outputs.buildMetaData }}"
+          echo "BuildMetaDataPadded: ${{ steps.calculate-gitversion.outputs.buildMetaDataPadded }}"
+          echo "FullBuildMetaData: ${{ steps.calculate-gitversion.outputs.fullBuildMetaData }}"
+          echo "MajorMinorPatch: ${{ steps.calculate-gitversion.outputs.majorMinorPatch }}"
+          echo "SemVer: ${{ steps.calculate-gitversion.outputs.semVer }}"
+          echo "LegacySemVer: ${{ steps.calculate-gitversion.outputs.legacySemVer }}"
+          echo "LegacySemVerPadded: ${{ steps.calculate-gitversion.outputs.legacySemVerPadded }}"
+          echo "AssemblySemVer: ${{ steps.calculate-gitversion.outputs.assemblySemVer }}"
+          echo "AssemblySemFileVer: ${{ steps.calculate-gitversion.outputs.assemblySemFileVer }}"
+          echo "FullSemVer: ${{ steps.calculate-gitversion.outputs.fullSemVer }}"
+          echo "InformationalVersion: ${{ steps.calculate-gitversion.outputs.informationalVersion }}"
+          echo "BranchName: ${{ steps.calculate-gitversion.outputs.branchName }}"
+          echo "EscapedBranchName: ${{ steps.calculate-gitversion.outputs.escapedBranchName }}"
+          echo "Sha: ${{ steps.calculate-gitversion.outputs.sha }}"
+          echo "ShortSha: ${{ steps.calculate-gitversion.outputs.shortSha }}"
+          echo "NuGetVersionV2: ${{ steps.calculate-gitversion.outputs.nuGetVersionV2 }}"
+          echo "NuGetVersion: ${{ steps.calculate-gitversion.outputs.nuGetVersion }}"
+          echo "NuGetPreReleaseTagV2: ${{ steps.calculate-gitversion.outputs.nuGetPreReleaseTagV2 }}"
+          echo "NuGetPreReleaseTag: ${{ steps.calculate-gitversion.outputs.nuGetPreReleaseTag }}"
+          echo "VersionSourceSha: ${{ steps.calculate-gitversion.outputs.versionSourceSha }}"
+          echo "CommitsSinceVersionSource: ${{ steps.calculate-gitversion.outputs.commitsSinceVersionSource }}"
+          echo "CommitsSinceVersionSourcePadded: ${{ steps.calculate-gitversion.outputs.commitsSinceVersionSourcePadded }}"
+          echo "UncommittedChanges: ${{ steps.calculate-gitversion.outputs.uncommittedChanges }}"
+          echo "CommitDate: ${{ steps.calculate-gitversion.outputs.commitDate }}"
+          echo "SemVerFromEnvVar: $GITVERSION_SEMVER"
+          
+      - name: Restore Packages
+        id:   restore-packages
+        run:  dotnet restore
+        
+      - name: Build
+        id:   build
+        run:  dotnet build ${{env.SOLUTION_NAME}} --no-restore --configuration ${{env.BUILD_CONFIGURATION}} /p:Version=${{ steps.calculate-gitversion.outputs.semVer }} /p:AssemblyVersion=${{ steps.calculate-gitversion.outputs.semVer }} /p:InformationalVersion=${{ steps.calculate-gitversion.outputs.semVer }}'
+    
+      - name: Test
+        id:   test
+        run:  dotnet test --no-build --configuration ${{env.BUILD_CONFIGURATION}} --collect:"XPlat Code Coverage" --logger "GitHubActions"
+
+      - name: Upload coverage
+        id:   upload-coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: Code Coverage
+          path: "**/coverage.cobertura.xml"
+
+      - name: Generate Coverage Report
+        id:   generate-coverage-report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.1.9
+        with:
+          reports: "**/coverage.cobertura.xml"
+          targetdir: "coverage-report"
+          reporttypes: "Cobertura"
+
+      - name: Publish Coverage to Codacy
+        id:   publish-coverage-report
+        uses: codacy/codacy-coverage-reporter-action@master
+        if: github.repository == 'ceerum/Silvertop.SemanticVersioning' && github.event_name == 'push'
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage-report/Cobertura.xml
+
+      - name: Create Packages
+        id:   create-packages
+        run:  dotnet pack --configuration ${{env.BUILD_CONFIGURATION}} --output ./packages
+
+      - name: Upload Packages
+        id:   upload-packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: NuGetPackages
+          path: packages/*.*
+
+      - name: Tag Build
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ steps.calculate-gitversion.outputs.fullSemVer }}',
+              sha: context.sha
+            })
+
+  deploy:
+    name: Deploy
+    if: |
+      github.ref == 'refs/heads/main' && 
+      github.event_name == 'push' &&
+      (
+        startsWith(github.event.head_commit.message, 'feat:') ||
+        startsWith(github.event.head_commit.message, 'fix:')
+      )
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        id:   checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Set Up .NET
+        id:   setup-dot-net
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: | 
+            5.0.x
+            6.0.x  
+
+      - name: Download Artifacts
+        id:   download-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: NuGetPackages
+          path: packages
+
+      - name: Push packages 
+        id:   push-packages
+        run:  dotnet nuget push "packages/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ needs.build.outputs.semVer }}
+          tag_name: v${{ needs.build.outputs.semVer }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+
+      - name: Comment Release
+        uses: apexskier/github-release-commenter@v1.3.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-template: |
+            This is addressed in release {release_link}.
+          label-template: |
+            state: released

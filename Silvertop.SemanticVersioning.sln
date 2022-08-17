@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E1AF428B-C0A2-463B-8D61-BD00D586AF6A}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		.github\workflows\github-actions.yml = .github\workflows\github-actions.yml
 		README.md = README.md
 		Silvertop.SemanticVersioning.sln.DotSettings = Silvertop.SemanticVersioning.sln.DotSettings
 	EndProjectSection
