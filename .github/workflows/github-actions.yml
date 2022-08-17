@@ -43,14 +43,14 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0.9.13
         with:
           useConfigFile: true
-          
+
       - name: Restore Packages
         id:   restore-packages
         run:  dotnet restore
         
       - name: Build
         id:   build
-        run:  dotnet build ${{env.SOLUTION_NAME}} --no-restore --configuration ${{env.BUILD_CONFIGURATION}} /p:Version=${{ steps.calculate-gitversion.outputs.semVer }} /p:AssemblyVersion=${{ steps.calculate-gitversion.outputs.semVer }} /p:InformationalVersion=${{ steps.calculate-gitversion.outputs.semVer }}
+        run:  dotnet build ${{env.SOLUTION_NAME}} --no-restore --configuration ${{env.BUILD_CONFIGURATION}} /p:Version=${{ steps.calculate-gitversion.outputs.AssemblySemVer }} /p:AssemblyVersion=${{ steps.calculate-gitversion.outputs.AssemblySemVer }} /p:InformationalVersion=${{ steps.calculate-gitversion.outputs.semVer }}
     
       - name: Test
         id:   test
