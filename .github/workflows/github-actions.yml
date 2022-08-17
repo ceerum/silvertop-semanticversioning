@@ -28,7 +28,7 @@ jobs:
         id:   setup-dot-net
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: | 
+          dotnet-version: |
             6.0.x
 
       - name: Install GitVersion
@@ -73,7 +73,7 @@ jobs:
       - name: Publish Coverage to Codacy
         id:   publish-coverage-report
         uses: codacy/codacy-coverage-reporter-action@master
-        if: github.repository == 'ceerum/Silvertop.SemanticVersioning' && github.event_name == 'push'
+        if:   github.event_name == 'push'
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage-report/Cobertura.xml
@@ -102,13 +102,8 @@ jobs:
 
   deploy:
     name: Deploy
-    if: |
-      github.ref == 'refs/heads/main' && 
-      github.event_name == 'push' &&
-      (
-        startsWith(github.event.head_commit.message, 'feat:') ||
-        startsWith(github.event.head_commit.message, 'fix:')
-      )
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: Public NuGet Feed
     needs: [build]
     runs-on: ubuntu-latest
     steps:
