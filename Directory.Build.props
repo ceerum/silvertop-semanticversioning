@@ -12,7 +12,7 @@
     <Authors>Ross McCulloch</Authors>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <Company>Silvertop</Company>
-    <Copyright>Copyright © Ross McCulloch</Copyright>
+    <Copyright>Copyright © Ross McCulloch 2022</Copyright>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -24,9 +24,10 @@
     <LangVersion>10.0</LangVersion>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <Nullable>enable</Nullable>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ceerum/silvertop-semanticversioning</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Platforms>AnyCPU</Platforms>
-    <Product>Silvertop.SemVer</Product>
+    <Product>Silvertop.SemanticVersioning</Product>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <SignAssembly>false</SignAssembly>
