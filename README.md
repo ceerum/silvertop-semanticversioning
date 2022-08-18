@@ -1,3 +1,4 @@
+
 # Silvertop.SemanticVersioning
 
 [![Build](https://github.com/ceerum/silvertop-semanticversioning/actions/workflows/github-actions.yml/badge.svg)](https://github.com/ceerum/silvertop-semanticversioning/actions)
@@ -6,6 +7,7 @@
 [![Coverage](https://app.codacy.com/project/badge/Coverage/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&utm_medium=referral&utm_content=ceerum/silvertop-semanticversioning&utm_campaign=Badge_Coverage)
 [![Quality](https://app.codacy.com/project/badge/Grade/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ceerum/silvertop-semanticversioning&amp;utm_campaign=Badge_Grade)
 [![Open Issues](https://img.shields.io/github/issues-raw/ceerum/silvertop-semanticversioning)](https://github.com/ceerum/silvertop-semanticversioning/issues)
+[![Open Pull Requests](https://img.shields.io/github/issues-pr-raw/ceerum/silvertop-semanticversioning)](https://github.com/ceerum/silvertop-semanticversioning/pulls)
 [![GitHub license](https://img.shields.io/github/license/ceerum/silvertop-semanticversioning.svg)](https://github.com/ceerum/silvertop-semanticversioning/blob/master/LICENSE)
 
 The **Silvertop.SemanticVersioning** library contains a .Net class, `SemanticVersion`, that strictly supports Semantic Versioning 2.0.0 as described at https://semver.org/. 
@@ -23,9 +25,14 @@ The `IComparable` operators `< > <= >= ==` strictly follow the precedence rules 
 The `IEquatable` interface allows you to check if two semantic versions are indeed identical, as if it were a string comparison. This allows you to use syntax like `semver1.Equals(semver2)` if you wish to check that two semantic versions, including any build metadata that may exist, are actually equal. 
 
 ## System.Version Conversion
-By default, when converting from a *Version* to or from a **SemanticVersion** only the **Major**, **Minor** and **Build** properties are used, with **Build** mapping to **Patch** and vice versa, since Semantic Versioning has no concept of the **Revision** number.
+By default, when converting from a *Version* to or from a **SemanticVersion** only the **Major**, **Minor** and **Build** properties are used, with **Build** mapping to **Patch** and vice versa, since Semantic Versioning has no concept of the **Revision** number. 
 
-The conversion methods do allow for some conversion to take place if required, whereby the **Revision** can be treated as a pre-release number, defaulting to using a '**beta**' prefix, but this can also be overridden. 
+#### Pre-Release/Revision Mapping
+The conversion methods do allow for some conversion to take place if required, whereby the **Revision** can be treated as a pre-release number, defaulting to using a '**beta**' prefix, but this prefix text can be overridden. 
+
+**Note:** Be aware that if you use this mapping technique then the release version (i.e. no **PreRelease** part to the SemVer) will have a **Revision**  of **0**, which will be less than all pre-release versions. For versioning that ignores revision, such as MSI installs, this may not be an issue. For everything else the release version will be seen as an earlier version than any pre-release versions.
+
+#### Conversion Examples
 ```csharp
 // To Version with pre-release number conversion
 var semanticVersion1 = SemanticVersion.Parse("3.4.66-beta.10+20220815.1");
@@ -48,7 +55,7 @@ var semanticVersion4 = SemanticVersion.FromVersion(version4, false);
 var semanticVersionString4 = semanticVersion4.ToString(); // 5.77.4
 ```
 
-## Usage Examples
+## Usage 
 ```csharp
 using Silvertop.SemanticVersioning;
 
