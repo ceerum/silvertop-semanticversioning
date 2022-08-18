@@ -1,13 +1,16 @@
 # Silvertop.SemanticVersioning
 
-|      |      |      |
-| :--- | :--- | :--- |
-| [![NuGet stable version](https://badgen.net/nuget/v/Silvertop.SemanticVersioning)](https://nuget.org/packages/Silvertop.SemanticVersioning) | [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ceerum/silvertop-semanticversioning&amp;utm_campaign=Badge_Grade) | ![Continuous Integration](https://github.com/ceerum/silvertop-semanticversioning/actions/workflows/github-actions.yml/badge.svg) |
-| [![NuGet pre version](https://badgen.net/nuget/v/Silvertop.SemanticVersioning/pre)](https://nuget.org/packages/Silvertop.SemanticVersioning) | [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&utm_medium=referral&utm_content=ceerum/silvertop-semanticversioning&utm_campaign=Badge_Coverage) | [![GitHub license](https://img.shields.io/github/license/ceerum/silvertop-semanticversioning.svg)](https://github.com/ceerum/silvertop-semanticversioning/blob/master/LICENSE) |
+[![Build](https://github.com/ceerum/silvertop-semanticversioning/actions/workflows/github-actions.yml/badge.svg)](https://github.com/ceerum/silvertop-semanticversioning/actions)
+[![Version](https://badgen.net/nuget/v/Silvertop.SemanticVersioning)](https://nuget.org/packages/Silvertop.SemanticVersioning)
+[![Downloads](https://img.shields.io/nuget/dt/silvertop.semanticversioning)](https://nuget.org/packages/silvertop-semanticversioning)
+[![Coverage](https://app.codacy.com/project/badge/Coverage/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&utm_medium=referral&utm_content=ceerum/silvertop-semanticversioning&utm_campaign=Badge_Coverage)
+[![Quality](https://app.codacy.com/project/badge/Grade/9acd907149ee4e9cacc15558dd583214)](https://www.codacy.com/gh/ceerum/silvertop-semanticversioning/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ceerum/silvertop-semanticversioning&amp;utm_campaign=Badge_Grade)
+[![Open Issues](https://img.shields.io/github/issues-raw/ceerum/silvertop-semanticversioning)](https://github.com/ceerum/silvertop-semanticversioning/issues)
+[![GitHub license](https://img.shields.io/github/license/ceerum/silvertop-semanticversioning.svg)](https://github.com/ceerum/silvertop-semanticversioning/blob/master/LICENSE)
 
 The **Silvertop.SemanticVersioning** library contains a .Net class, `SemanticVersion`, that strictly supports Semantic Versioning 2.0.0 as described at https://semver.org/. 
 
-It allows you to validate, parse, generate, compare and sort semantic version strings that strictly adhere to the definition. It also provides for quick conversion to and from `System.Version` objects.
+It allows you to validate, parse, generate, compare and sort semantic version strings that strictly adhere to the definition. It also provides quick conversion to and from `System.Version` objects.
 
 ## Installing The Package
 The package is available from the NuGet.org public feed.
